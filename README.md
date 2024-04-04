@@ -1,4 +1,4 @@
-# formula-one-video-recognition-model
+# formula-one-recognition-model
 Repository holds code and data for video classification model - of cars representing particular teams in Formula 1.
 
 # Repository structure
@@ -14,12 +14,12 @@ Repository holds code and data for video classification model - of cars represen
 
 # Docker image
 ## Building
-`docker build --no-cache -t f1-video-classification-model:v0.1 -f Dockerfile .`
+`docker build --no-cache -t f1-recognition-model:v0.1 -f Dockerfile .`
 ## Running
-`docker run -it f1-video-classification-model:v0.1`
+`docker run -it f1-recognition-model:v0.1`
 
 # Adding image to use in minikube
-`minikube image load f1-video-classification-model:v0.1`
+`minikube image load f1-recognition-model:v0.1`
 
 # Example
 ## Image
