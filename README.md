@@ -24,9 +24,9 @@ Repository holds code and data for video classification model - of cars represen
 # Example
 ## Image
 ### Base
-![sample image](./input/annotated_lando-norris-mclaren-mcl35m-1.png)
+![sample image](./input/lando-norris-mclaren-mcl35m-1.png)
 ### Annotated
-![sample image annotated](./input/annotated_lando-norris-mclaren-mcl35m-1_annotated.png)
+![sample image annotated](./input/lando-norris-mclaren-mcl35m-1_annotated.png)
 ## Video
 ### Base
 ![sample video](./input/sample_video_1.mp4)
