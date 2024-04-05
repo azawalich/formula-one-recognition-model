@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import supervision as sv
 import cv2
@@ -75,14 +76,22 @@ def predict_video(filepath, roboflow_model, tracker_byte, annotator_box):
 
     video_callback_partial = functools.partial(video_callback, pathfile=filepath, model_roboflow=roboflow_model, byte_tracker=tracker_byte, box_annotator=annotator_box)
     target_content_path = "./static/temp_file_annotated.mp4"
+    target_image_path = "./static/temp_file_annotated.jpg"
     # process the whole video
     sv.process_video(
         source_path = filepath,
         target_path = target_content_path,
         callback=video_callback_partial
     )
+    
+    target_content_path_final = "./static/temp_file_annotated_codec.mp4"
+    video_info = sv.VideoInfo.from_video_path(target_content_path)
+    frames_generator = sv.get_video_frames_generator(target_content_path)
 
-    import time
-    time.sleep(10)
+    with sv.VideoSink(target_path=target_content_path_final, video_info=video_info) as sink:
+        for frame in frames_generator:
+            sink.write_frame(frame=frame)
+            if os.path.exists(target_image_path) == False:
+                cv2.imwrite(target_image_path, frame) 
 
     return target_content_path

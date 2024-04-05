@@ -1,6 +1,12 @@
 <html>
   <head>
     <title>Formula 1 Model for Cars Recognition - Prediction Page</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link href="//vjs.zencdn.net/7.14.3/video-js.css" rel="stylesheet">
+    <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ url_for('static', path='script.js') }}"></script>
@@ -12,10 +18,20 @@
     {% endif %}
     {% if is_video == 1 %}
     <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Video</b></h1>
-    <a href="/annotated-video">Click here to see <b>annotated video</b></a>
-    <video width="640" height="320" src="{{ url_for('static', path=content_filepath) }}" type='video/mp4'>
-      Your browser does not support the video tag.
-    </video>
+    <a href="/get_video/{{video.name}}">Download your <b>annotated video</b></a>
+    <div class="video_js">
+      <video id="example_video_1" width="710" height="400" class="video-js  vjs-theme-city vjs-big-play-centered" controls
+         preload="auto" width="640" height="264" data-viblast-key="N8FjNTQ3NDdhZqZhNGI5NWU5ZTI=">
+         <source src="/get_video/{{video.name}}" type="video/mp4" />
+      </video>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://vjs.zencdn.net/7.14.3/video.min.js"></script>
+    <script>
+        videojs('#example_video_1', {}, function () { });
+    </script>
+    <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Video Frame</b></h1>
+    <img src="{{ url_for('static', path='temp_file_annotated.jpg') }}" width="1280" height="720" />
     {% endif %}
     <br /><br />
     <a href="/">Go back to the <b>homepage</b></a>

@@ -14,12 +14,12 @@ Repository holds code and data for video classification model - of cars represen
 
 # Docker image
 ## Building
-`docker build --no-cache -t f1-recognition-model:v0.1 -f Dockerfile .`
+`docker build --no-cache -t f1-recognition-model:v0.2 -f Dockerfile .`
 ## Running
-`docker run -it f1-recognition-model:v0.1`
+`docker run -it f1-recognition-model:v0.2`
 
 # Adding image to use in minikube
-`minikube image load f1-recognition-model:v0.1`
+`minikube image load f1-recognition-model:v0.2`
 
 # Example
 ## Image
