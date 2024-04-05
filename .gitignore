@@ -1,2 +1,5 @@
 input/sample_video_out.mp4
+static/*.jpg
+static/*.png
+static/*.mp4
 __pycache__
