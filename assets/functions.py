@@ -38,7 +38,7 @@ def video_callback(frame: np.ndarray, index:int, pathfile, model_roboflow, byte_
     
     video_info = sv.VideoInfo.from_video_path(pathfile)
     zone = sv.PolygonZone(polygon=cst.polygon, frame_resolution_wh=(video_info.width, video_info.height))
-    zone_annotator = sv.PolygonZoneAnnotator(thickness=cst.thickness, text_thickness=cst.text_thickness, text_scale=cst.text_scale, zone=zone, color=cst.colors.colors[0])
+    zone_annotator = sv.PolygonZoneAnnotator(thickness=cst.thickness, text_thickness=cst.text_thickness, text_scale=cst.text_scale, zone=zone, color=cst.default_color_palette.colors[0])
     # model prediction on single frame and conversion to supervision Detections
     # with tempfile.NamedTemporaryFile(suff?ix=".jpg") as temp:
     results = model_roboflow.predict(frame).json()
@@ -58,13 +58,13 @@ def video_callback(frame: np.ndarray, index:int, pathfile, model_roboflow, byte_
             class_chosen = single_detection.class_id[0]
             probability = int(round(single_detection.confidence*100,0))
             
-        long_label = "{}, probability: {}%".format(cst.classes[class_chosen], probability)
         indeks = list(cst.classes.keys()).index(class_chosen)
+        
+        long_label = "{}, probability: {}%".format(cst.classes[class_chosen], probability)
         labels.append(long_label)
 
-    box_annotator.color = cst.colors.colors[indeks]
-    zone_annotator.color = cst.colors.colors[indeks]
-    
+    box_annotator.color = cst.colors_palette
+
     annotated_frame = box_annotator.annotate(scene=frame, detections=detections, labels=labels)
     annotated_frame = zone_annotator.annotate(scene=annotated_frame)
     

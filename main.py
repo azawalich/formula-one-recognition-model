@@ -20,11 +20,7 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-a', '--roboflow-api-key')
-args = parser.parse_args()
-api_key_gp = args.roboflow_api_key
+api_key_gp = os.environ['ROBOFLOW_API_KEY']
 
 model = fct.initialize_roboflow(key_api=api_key_gp)
 byte_tracker = sv.ByteTrack(
@@ -37,7 +33,7 @@ box_annotator = sv.BoxAnnotator(
     thickness=cst.thickness, 
     text_thickness=cst.thickness, 
     text_scale=cst.thickness, 
-    color=cst.colors.colors[0]
+    color=cst.colors_palette
 )
 
 @app.get("/healthcheck")
@@ -51,11 +47,6 @@ def dynamic_file(request: Request):
 @app.post("/predict")
 def dynamic(request: Request, file: UploadFile = File()):
     
-    # cleanup stuff at the beginning of each processing
-    files = glob.glob('./static/*')
-    for f in files:
-        os.remove(f)
-
     is_video = 0
     is_image = 0
 
@@ -66,6 +57,11 @@ def dynamic(request: Request, file: UploadFile = File()):
         '.tif': "SUkq"
     }
     base64_extensions_bytes_flattened = [x for xs in list(base64_extensions.items()) for x in xs] 
+
+    # cleanup stuff at the beginning of each processing
+    files = glob.glob('./static/temp_file*')
+    for f in files:
+        os.remove(f)
 
     data = file.file.read()
     file.file.close()

@@ -1,9 +1,11 @@
-FROM python:3.12.2-slim
+FROM python:3.12.2-bookworm
 WORKDIR /app/
-ADD static /app
-ADD templates /app
+ADD requirements /tmp
+COPY assets /app/assets
+COPY static /app/static
+COPY templates /app/templates
 ADD main.py /app
-ADD requirements.txt /tmp
-RUN python -m pip install --no-cache-dir $(echo `cat /tmp/requirements.txt`)
-ENTRYPOINT ["python", "-m", "uvicorn", "--host", "0.0.0.0"]
-CMD ["main:app"]
+RUN apt update && apt upgrade -y \
+  && apt install -y $(cat /tmp/apt) \
+  && python -m pip install --no-cache-dir $(echo `cat /tmp/python`)
+ENTRYPOINT ["python", "-m", "main.py"]

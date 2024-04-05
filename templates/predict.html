@@ -1,18 +1,22 @@
 <html>
   <head>
-    <title>Rendering Dynamic Images Using FastAPI</title>
+    <title>Formula 1 Model for Cars Recognition - Prediction Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', path='script.js') }}"></script>
   </head>
   <body>
-    <a href="/">Return to the main page</a>
     {% if is_image == 1 %}
-    <h1>Rendered Media - Image</h1>
+    <h1>Formula 1 Model for Cars Recognition - <b>Annotated Image</b></h1>
       <img src="{{ url_for('static', path=content_filepath) }}" />
     {% endif %}
     {% if is_video == 1 %}
-    <h1>Rendered Media - Video</h1>
+    <h1>Formula 1 Model for Cars Recognition - <b>Annotated Video</b></h1>
     <video width="640" height="320" src="{{ url_for('static', path=content_filepath) }}" type='video/mp4'>
       Your browser does not support the video tag.
     </video>
     {% endif %}
+    <br /><br />
+    <a href="/">Go back to the <b>homepage</b></a>
   </body>
 </html>
