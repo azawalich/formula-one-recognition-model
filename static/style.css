@@ -1,0 +1,137 @@
+@font-face {
+  font-family: Formula1;
+  src: url("fonts/Formula1-Regular.otf");
+}
+
+@font-face {
+  font-family: Formula1;
+  src: url("fonts/Formula1-Bold.otf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Formula1Wide;
+  src: url("fonts/Formula1-Wide.otf");
+}
+
+@font-face {
+  font-family: TitilliumWeb;
+  src: url("fonts/TitilliumWeb-Regular.ttf");
+}
+
+body {
+  background-color: #101017;
+  font-family: Formula1;
+} 
+
+h1, h2, h3, p {
+  font-family: Formula1;
+  color: #ffffff;
+  opacity: 0.9;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 22px;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+p, form {
+  font-family: Formula1;
+  font-size: 14px;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+input {
+  color: #ffffff;
+  font-family: Formula1;
+  font-size: 14px;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+input::file-selector-button, #predict {
+  color: #ffffff;
+  font-family: Formula1;
+  background: none;
+  border: 1px solid #ff1801;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+b { 
+  color: #ff1801;
+  font-weight: bold;
+}
+
+#wrapper {
+  width: 250px;
+  height: 80px;
+}
+
+.lds-ring {
+  /* change color here */
+  color: #ff1801;
+}
+
+.lds-ring, .lds-ring div {
+  box-sizing: border-box;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin: 8px;
+  border: 8px solid currentColor;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

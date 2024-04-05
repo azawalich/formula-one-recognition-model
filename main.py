@@ -9,6 +9,7 @@ from assets import functions as fct
 import supervision as sv
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Request, APIRouter
+from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -20,11 +21,8 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-a', '--roboflow-api-key')
-args = parser.parse_args()
-api_key_gp = args.roboflow_api_key
+# api_key_gp = os.environ['ROBOFLOW_API_KEY']
+api_key_gp = "rXEt6FwM5uzppisJT2IF"
 
 model = fct.initialize_roboflow(key_api=api_key_gp)
 byte_tracker = sv.ByteTrack(
@@ -37,7 +35,7 @@ box_annotator = sv.BoxAnnotator(
     thickness=cst.thickness, 
     text_thickness=cst.thickness, 
     text_scale=cst.thickness, 
-    color=cst.colors.colors[0]
+    color=cst.colors_palette
 )
 
 @app.get("/healthcheck")
@@ -51,11 +49,6 @@ def dynamic_file(request: Request):
 @app.post("/predict")
 def dynamic(request: Request, file: UploadFile = File()):
     
-    # cleanup stuff at the beginning of each processing
-    files = glob.glob('./static/*')
-    for f in files:
-        os.remove(f)
-
     is_video = 0
     is_image = 0
 
@@ -66,6 +59,11 @@ def dynamic(request: Request, file: UploadFile = File()):
         '.tif': "SUkq"
     }
     base64_extensions_bytes_flattened = [x for xs in list(base64_extensions.items()) for x in xs] 
+
+    # cleanup stuff at the beginning of each processing
+    files = glob.glob('./static/temp_file*')
+    for f in files:
+        os.remove(f)
 
     data = file.file.read()
     file.file.close()
@@ -116,5 +114,9 @@ def dynamic(request: Request, file: UploadFile = File()):
             "is_video": is_video
             }
         )
+
+@app.get("/annotated-video/{video}")
+async def see_video(video):
+    return FileResponse(video) 
 
 uvicorn.run(app, host = "0.0.0.0")

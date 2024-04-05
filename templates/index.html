@@ -1,16 +1,26 @@
 <html>
   <head>
-    <title>Recognize and classify F1 Cars</title>
+    <title>Formula 1 Model for Cars Recognition - Homepage</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', path='script.js') }}"></script>
   </head>
   <body>
-    </body>
-    <h1>Recognize and classify F1 Cars</h1>
-    <h2>Choose image/video file using form below</h2>
+    <h1><b>Formula 1</b> Model for Cars Recognition</h1>
+    <h2>Choose <b>image/video file</b> using form below</h2>
     <form action="/predict" enctype="multipart/form-data" method="POST">
       <input name="file" type="file" />
-      <input type="submit" value="Predict"/>
+      <input id="predict" type="submit" value="Predict" style="visibility: visible"/>
     </form>
-    <a href="/healthcheck">Check API health</a>
-    <p>Check API documentation: <a href="/docs">Swagger</a>, <a href="/redoc">ReDoc</a></p>
+    <p>Check out:</p>
+    <ul>
+      <li><a href="/healthcheck">API health</a></li>
+      <li><a href="/docs">API Docs: Swagger</a></li>
+      <li><a href="/redoc">API Docs: ReDoc</a></li>
+    </ul>
+    <div id="wrapper">
+      <div class="lds-ring progress" style="visibility: hidden"><div></div><div></div><div></div><div></div></div>
+      <p class="progress" style="visibility: hidden; float: right; margin-left: 20px; margin-top: 20px;">Prediction <b>in progress</b>...</p>
+    </div>
   </body>
 </html>
