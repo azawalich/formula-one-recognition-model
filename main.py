@@ -21,8 +21,7 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-# api_key_gp = os.environ['ROBOFLOW_API_KEY']
-api_key_gp = "rXEt6FwM5uzppisJT2IF"
+api_key_gp = os.environ['ROBOFLOW_API_KEY']
 
 files = {
     item: os.path.join('static', item)
@@ -126,24 +125,6 @@ async def get_video(video_name: str, response_class=FileResponse):
     video_path = files.get(video_name)
     if video_path:
         return StreamingResponse(open(video_path, 'rb'))
-    else:
-        return Response(status_code=404)
-    
-@app.get('/play_video/html5/{video_name}')
-async def play_video(video_name: str, request: Request, response_class=HTMLResponse):
-    video_path = files.get(video_name)
-    if video_path:
-        return templates.TemplateResponse(
-            'play_html5.html', {'request': request, 'video': {'path': video_path, 'name': video_name}})
-    else:
-        return Response(status_code=404)
-
-@app.get('/play_video/videojs/{video_name}')
-async def play_video(video_name: str, request: Request, response_class=HTMLResponse):
-    video_path = files.get(video_name)
-    if video_path:
-        return templates.TemplateResponse(
-            'play_videojs.html', {'request': request, 'video': {'path': video_path, 'name': video_name}})
     else:
         return Response(status_code=404)
 
