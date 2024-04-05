@@ -82,4 +82,7 @@ def predict_video(filepath, roboflow_model, tracker_byte, annotator_box):
         callback=video_callback_partial
     )
 
+    import time
+    time.sleep(10)
+
     return target_content_path

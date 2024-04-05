@@ -9,6 +9,7 @@ from assets import functions as fct
 import supervision as sv
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Request, APIRouter
+from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -20,7 +21,8 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-api_key_gp = os.environ['ROBOFLOW_API_KEY']
+# api_key_gp = os.environ['ROBOFLOW_API_KEY']
+api_key_gp = "rXEt6FwM5uzppisJT2IF"
 
 model = fct.initialize_roboflow(key_api=api_key_gp)
 byte_tracker = sv.ByteTrack(
@@ -112,5 +114,9 @@ def dynamic(request: Request, file: UploadFile = File()):
             "is_video": is_video
             }
         )
+
+@app.get("/annotated-video/{video}")
+async def see_video(video):
+    return FileResponse(video) 
 
 uvicorn.run(app, host = "0.0.0.0")

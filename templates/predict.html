@@ -7,11 +7,12 @@
   </head>
   <body>
     {% if is_image == 1 %}
-    <h1>Formula 1 Model for Cars Recognition - <b>Annotated Image</b></h1>
+    <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Image</b></h1>
       <img src="{{ url_for('static', path=content_filepath) }}" />
     {% endif %}
     {% if is_video == 1 %}
-    <h1>Formula 1 Model for Cars Recognition - <b>Annotated Video</b></h1>
+    <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Video</b></h1>
+    <a href="/annotated-video">Click here to see <b>annotated video</b></a>
     <video width="640" height="320" src="{{ url_for('static', path=content_filepath) }}" type='video/mp4'>
       Your browser does not support the video tag.
     </video>
