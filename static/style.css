@@ -86,6 +86,21 @@ b {
   height: 80px;
 }
 
+#wrapper-predict {
+  float: left;
+  width: 1800px;
+}
+
+#results {
+  width: 850px;
+  float: left;
+}
+
+#submission {
+  width: 850px;
+  float: left;
+}
+
 .lds-ring {
   /* change color here */
   color: #ff1801;
