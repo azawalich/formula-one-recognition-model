@@ -78,6 +78,9 @@ def predict_video(filepath, roboflow_model, tracker_byte, annotator_box):
     target_content_path = "./static/temp_file_annotated.mp4"
     target_image_path = "./static/temp_file_annotated.jpg"
     # process the whole video
+
+    #TODO: this creation of a video file desperately nneds fixing to enable its' embedding
+
     sv.process_video(
         source_path = filepath,
         target_path = target_content_path,
@@ -92,6 +95,7 @@ def predict_video(filepath, roboflow_model, tracker_byte, annotator_box):
         for frame in frames_generator:
             sink.write_frame(frame=frame)
             if os.path.exists(target_image_path) == False:
+                #TODO: could improve choice of video frame
                 cv2.imwrite(target_image_path, frame) 
 
     return target_content_path

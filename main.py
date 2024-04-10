@@ -21,7 +21,8 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-api_key_gp = os.environ['ROBOFLOW_API_KEY']
+# api_key_gp = os.environ['ROBOFLOW_API_KEY']
+api_key_gp = "rXEt6FwM5uzppisJT2IF"
 
 files = {
     item: os.path.join('static', item)
@@ -41,6 +42,8 @@ box_annotator = sv.BoxAnnotator(
     text_scale=cst.thickness, 
     color=cst.colors_palette
 )
+
+#TODO: could create endpoint with API response only
 
 @app.get("/healthcheck")
 async def root():
