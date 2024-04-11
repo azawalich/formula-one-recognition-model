@@ -5,6 +5,7 @@ import cv2
 from roboflow import Roboflow
 import tempfile
 import functools
+import time
 from assets import constants as cst
 
 def initialize_roboflow(key_api):
@@ -72,11 +73,12 @@ def video_callback(frame: np.ndarray, index:int, pathfile, model_roboflow, byte_
     # return frame with box and line annotated result
     return annotated_frame
 
-def predict_video(filepath, roboflow_model, tracker_byte, annotator_box):
+def predict_video(filepath, roboflow_model, tracker_byte, annotator_box, filename_original, client_minio, minio_bucket):
 
     video_callback_partial = functools.partial(video_callback, pathfile=filepath, model_roboflow=roboflow_model, byte_tracker=tracker_byte, box_annotator=annotator_box)
     target_content_path = "./static/temp_file_annotated.mp4"
     target_image_path = "./static/temp_file_annotated.jpg"
+    target_image_path_filename = target_image_path.split('/')[-1]
     # process the whole video
 
     #TODO: this creation of a video file desperately nneds fixing to enable its' embedding
@@ -97,5 +99,11 @@ def predict_video(filepath, roboflow_model, tracker_byte, annotator_box):
             if os.path.exists(target_image_path) == False:
                 #TODO: could improve choice of video frame
                 cv2.imwrite(target_image_path, frame) 
+
+    current_timestamp = int(str(time.time()).replace('.', ''))
+
+    client_minio.fput_object(
+        minio_bucket, '{}_annotated_frame_{}'.format(current_timestamp, target_image_path_filename), target_image_path
+    )
 
     return target_content_path
