@@ -17,28 +17,19 @@ from fastapi.responses import StreamingResponse, FileResponse, HTMLResponse, Res
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-base_path = '/app/'
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', '--minio-url')
 parser.add_argument('-a', '--access-key')
 parser.add_argument('-s', '--secret-key')
 parser.add_argument('-r', '--roboflow-api-key')
+parser.add_argument('-d', '--debugging-local')
 args = parser.parse_args()
-
-#TODO: debug why it doesn't work on minikube
-if 'RUN_ON_MINIKUBE' not in os.environ:
-    base_path = ''
-    os.environ['ROBOFLOW_API_KEY'] = args.roboflow_api_key
-    os.environ["MINIO_ACCESS_KEY"] = args.access_key
-    os.environ["MINIO_SECRET_ACCESS_KEY"] = args.secret_key
-    os.environ["MINIO_URL"] = args.minio_url
 
 httpClient = urllib3.PoolManager(cert_reqs="CERT_NONE")
 
-minio_client = Minio(os.environ["MINIO_URL"],
-               access_key=os.environ['MINIO_ACCESS_KEY'],
-               secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
+minio_client = Minio(args.minio_url,
+               access_key=args.access_key,
+               secret_key=args.secret_key,
                http_client=httpClient
               )
 
@@ -52,7 +43,7 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-api_key_gp = os.environ['ROBOFLOW_API_KEY']
+api_key_gp = args.roboflow_api_key
 
 files = {
     item: os.path.join('static', item)
@@ -80,17 +71,16 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/")
-def dynamic_file(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+def dynamic_file(request: Request, local_debugging = args.debugging_local):
+    return templates.TemplateResponse(
+        "index.html", {
+            "request": request,
+            "debugging_local": local_debugging
+            }
+        )
  
 @app.post("/predict")
-def dynamic(request: Request, file: UploadFile = File()):
-    
-    if 'RUN_ON_MINIKUBE' not in os.environ:
-        local_debugging = False
-    else:
-        local_debugging = True
-
+def dynamic(request: Request, file: UploadFile = File(), debugging_local = args.debugging_local):
     is_video = 0
     is_image = 0
 
@@ -150,7 +140,10 @@ def dynamic(request: Request, file: UploadFile = File()):
             source_content_filepath, 
             model, 
             byte_tracker, 
-            box_annotator
+            box_annotator,
+            original_filename,
+            minio_client,
+            bucket_name
         )
 
     current_timestamp = int(str(time.time()).replace('.', ''))
@@ -168,7 +161,7 @@ def dynamic(request: Request, file: UploadFile = File()):
             "is_image": is_image, 
             "is_video": is_video,
             'video': {'path': result_content_filepath, 'name': result_content_filepath.split('/')[-1]},
-            "debugging_local": local_debugging
+            "debugging_local": debugging_local
             }
         )
 
