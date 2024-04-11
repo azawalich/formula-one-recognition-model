@@ -2,6 +2,10 @@ import base64
 import os
 import glob
 import argparse
+import time
+from minio import Minio
+from minio.error import InvalidResponseError
+import urllib3
 
 from assets import constants as cst
 from assets import functions as fct
@@ -13,6 +17,33 @@ from fastapi.responses import StreamingResponse, FileResponse, HTMLResponse, Res
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+base_path = '/app/'
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-m', '--minio-url')
+parser.add_argument('-a', '--access-key')
+parser.add_argument('-s', '--secret-key')
+parser.add_argument('-r', '--roboflow-api-key')
+args = parser.parse_args()
+
+#TODO: debug why it doesn't work on minikube
+if 'RUN_ON_MINIKUBE' not in os.environ:
+    base_path = ''
+    os.environ['ROBOFLOW_API_KEY'] = args.roboflow_api_key
+    os.environ["MINIO_ACCESS_KEY"] = args.access_key
+    os.environ["MINIO_SECRET_ACCESS_KEY"] = args.secret_key
+    os.environ["MINIO_URL"] = args.minio_url
+
+httpClient = urllib3.PoolManager(cert_reqs="CERT_NONE")
+
+minio_client = Minio(os.environ["MINIO_URL"],
+               access_key=os.environ['MINIO_ACCESS_KEY'],
+               secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
+               http_client=httpClient
+              )
+
+bucket_name = "recognize"
+
 app = FastAPI()
 app.mount(
     "/static", 
@@ -21,8 +52,7 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-# api_key_gp = os.environ['ROBOFLOW_API_KEY']
-api_key_gp = "rXEt6FwM5uzppisJT2IF"
+api_key_gp = os.environ['ROBOFLOW_API_KEY']
 
 files = {
     item: os.path.join('static', item)
@@ -56,6 +86,11 @@ def dynamic_file(request: Request):
 @app.post("/predict")
 def dynamic(request: Request, file: UploadFile = File()):
     
+    if 'RUN_ON_MINIKUBE' not in os.environ:
+        local_debugging = False
+    else:
+        local_debugging = True
+
     is_video = 0
     is_image = 0
 
@@ -72,6 +107,7 @@ def dynamic(request: Request, file: UploadFile = File()):
     for f in files:
         os.remove(f)
 
+    original_filename = file.filename
     data = file.file.read()
     file.file.close()
 
@@ -97,6 +133,12 @@ def dynamic(request: Request, file: UploadFile = File()):
         binary_file.write(data)
     binary_file.close()
 
+    current_timestamp = int(str(time.time()).replace('.', ''))
+
+    minio_client.fput_object(
+        bucket_name, '{}_{}'.format(current_timestamp, original_filename), source_content_filepath
+    )
+
     if is_image == 1:
         result_content_filepath = fct.predict_image(
             source_content_filepath, 
@@ -111,6 +153,12 @@ def dynamic(request: Request, file: UploadFile = File()):
             box_annotator
         )
 
+    current_timestamp = int(str(time.time()).replace('.', ''))
+
+    minio_client.fput_object(
+        bucket_name, '{}_annotated_{}'.format(current_timestamp, original_filename), result_content_filepath
+    )
+
     result_content_filepath = result_content_filepath.replace('./static/', '')
 
     return templates.TemplateResponse(
@@ -119,7 +167,8 @@ def dynamic(request: Request, file: UploadFile = File()):
             "content_filepath": result_content_filepath, 
             "is_image": is_image, 
             "is_video": is_video,
-            'video': {'path': result_content_filepath, 'name': result_content_filepath.split('/')[-1]}
+            'video': {'path': result_content_filepath, 'name': result_content_filepath.split('/')[-1]},
+            "debugging_local": local_debugging
             }
         )
 

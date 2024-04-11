@@ -1,8 +1,9 @@
 <html>
   <head>
     <title>Formula 1 Model for Cars Recognition - Homepage</title>
-    <!-- TODO: make IF for local PC debugging -->
+    {% if debugging_local == False %}
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    {% endif %}
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ url_for('static', path='script.js') }}"></script>
