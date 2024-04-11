@@ -18,7 +18,7 @@ Repository holds code and data for video classification model - of cars represen
 docker build --no-cache \
 --build-arg MINIO_URL="<change_me>" \
 --build-arg ROBOFLOW_API_KEY="<change_me>" \
--t f1-recognition-model:v0.5 -f Dockerfile .
+-t f1-recognition-model:v0.4 -f Dockerfile .
 ```
 ## Running
 ```
@@ -27,11 +27,11 @@ docker run -it \
 -e MINIO_ACCESS_KEY="<change_me>" \
 -e MINIO_SECRET_KEY="<change_me>" \
 -e ROBOFLOW_API_KEY="<change_me>" \
-f1-recognition-model:v0.5
+f1-recognition-model:v0.4
 ```
 
 # Adding image to use in minikube
-`minikube image load f1-recognition-model:v0.5`
+`minikube image load f1-recognition-model:v0.4`
 
 # Example
 ## Image
