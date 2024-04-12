@@ -37,11 +37,19 @@ f1-recognition-model:v0.5
 ## Image
 ### Base
 ![sample image](./input/lando-norris-mclaren-mcl35m-1.png)
+### Homepage
+![sample image 2](./images/homepage-image.png)
+### Predict 
+![sample image 3](./images/predict-image.png)
 ### Annotated
 ![sample image annotated](./input/lando-norris-mclaren-mcl35m-1_annotated.png)
 ## Video
 ### Base
 ![sample video](./input/sample_video_1.mp4)
+### Homepage
+![sample image 3](./images/homepage-video.png)
+## Predict
+![sample image 4](./images/predict-video.png)
 ### Annotated
 ![sample video annotated](./input/sample_video_1_annotated.mp4)
 
