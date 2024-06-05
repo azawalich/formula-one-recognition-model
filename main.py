@@ -6,11 +6,10 @@ import time
 from minio import Minio
 from minio.error import InvalidResponseError
 import urllib3
+from datetime import timedelta
+from functions import * 
+from constants import * 
 
-from assets import constants as cst
-from assets import functions as fct
-
-import supervision as sv
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Request, APIRouter
 from fastapi.responses import StreamingResponse, FileResponse, HTMLResponse, Response
@@ -21,7 +20,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-m', '--minio-url')
 parser.add_argument('-a', '--access-key')
 parser.add_argument('-s', '--secret-key')
-parser.add_argument('-r', '--roboflow-api-key')
 parser.add_argument('-d', '--debugging-local')
 args = parser.parse_args()
 
@@ -43,26 +41,13 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory="templates")
-api_key_gp = args.roboflow_api_key
+
+class_names, predictor = initialize_models(net_type, model_path, label_path, size_candidate)
 
 files = {
     item: os.path.join('static', item)
     for item in os.listdir('static')
 }
-
-model = fct.initialize_roboflow(key_api=api_key_gp)
-byte_tracker = sv.ByteTrack(
-    track_activation_threshold=cst.track_activation_threshold, 
-    lost_track_buffer=cst.lost_track_buffer, 
-    minimum_matching_threshold=cst.minimum_matching_threshold, 
-    frame_rate=cst.frame_rate
-)
-box_annotator = sv.BoxAnnotator(
-    thickness=cst.thickness, 
-    text_thickness=cst.thickness, 
-    text_scale=cst.thickness, 
-    color=cst.colors_palette
-)
 
 #TODO: could create endpoint with API response only
 
@@ -130,26 +115,28 @@ def dynamic(request: Request, file: UploadFile = File(), debugging_local = args.
     )
 
     if is_image == 1:
-        result_content_filepath = fct.predict_image(
+        result_content_filepath, height_half, width_half = predict_image(
             source_content_filepath, 
-            model
+            class_names, 
+            predictor
         )
 
     if is_video == 1:    
-        result_content_filepath = fct.predict_video(
+        result_content_filepath, height_half, width_half = predict_video(
             source_content_filepath, 
-            model, 
-            byte_tracker, 
-            box_annotator,
-            original_filename,
-            minio_client,
-            bucket_name
+            class_names, 
+            predictor
         )
 
     current_timestamp = int(str(time.time()).replace('.', ''))
+    minio_filename = '{}_annotated_{}'.format(current_timestamp, original_filename)
 
     minio_client.fput_object(
-        bucket_name, '{}_annotated_{}'.format(current_timestamp, original_filename), result_content_filepath
+        bucket_name, minio_filename, result_content_filepath
+    )
+
+    minio_file_url = minio_client.get_presigned_url(
+        "GET", bucket_name,minio_filename, expires=timedelta(hours=1)
     )
 
     result_content_filepath = result_content_filepath.replace('./static/', '')
@@ -160,17 +147,11 @@ def dynamic(request: Request, file: UploadFile = File(), debugging_local = args.
             "content_filepath": result_content_filepath, 
             "is_image": is_image, 
             "is_video": is_video,
-            'video': {'path': result_content_filepath, 'name': result_content_filepath.split('/')[-1]},
+            "width_half": width_half, 
+            "height_half": height_half,
+            "url": minio_file_url,
             "debugging_local": debugging_local
             }
         )
-
-@app.get("/get_video/{video_name}")
-async def get_video(video_name: str, response_class=FileResponse):
-    video_path = files.get(video_name)
-    if video_path:
-        return StreamingResponse(open(video_path, 'rb'))
-    else:
-        return Response(status_code=404)
 
 uvicorn.run(app, host = "0.0.0.0")

@@ -2,14 +2,21 @@
 Repository holds code and data for video classification model - of cars representing particular teams in Formula 1.
 
 # Repository structure
-- `/assets`: Python modules for separating functions from `main.py` API file,
-- `/input`: data for model training, validation and testing are stored here. The amount of images commited is an example - I reduced their number to lessen the amount of storage held in GitHub/GitLab,
-- `/static`: folder for serving model-annotated files. Cleaned-up after sending any request to `/predict` API endpoint,
-- `/templates`: HTML templates to render with `Jinja` Python templating framework,
-- `formula-one-video-classification.ipynb`: improved / fixed jupyter notebook explaining model usage process (by [tarik-yilmaz-kanzileri on Roboflow](https://universe.roboflow.com/tarik-yilmaz-kanzileri/detection-f1-cars)),
+- `/images/`: exemplary screenshots of the solution are stored here - to ilustrate how it looks and works,
+- `/input/`: data for checking model accuracy is stored here,
+- `/models/`: binary files with trained ML models used across the solution,
+- `/requirements/`: folder with apt/python/binary package requirements necessary for API to work properly,
+- `/static/`: folder for serving model-annotated files. Cleaned-up after sending any request to `/predict` API endpoint,
+- `/templates/`: HTML templates to render with `Jinja` Python templating framework,
+- `/vision/`: folder with Pytorch-related functions,
+- `.dockerignore`: file with objects to be ignored by Docker during build,
+- `.gitignore`: file with objects to be ignored by Git,
+- `constants.py` and `functions.py`: Python modules for separating code from `main.py` API file,
 - `main.py`: Python file with API implementation and endpoints created with `FastAPI` framework,
+- `formula-one-video-classification.ipynb`: improved / fixed jupyter notebook explaining model usage process (by [tarik-yilmaz-kanzileri on Roboflow](https://universe.roboflow.com/tarik-yilmaz-kanzileri/detection-f1-cars)),
+
 - `README.md`: `Markdown`-based file you are currently reading,
-- `requirements.txt`: file with minimum package requirements necessary for API to work properly,
+
 - `environment.yaml`: file with full package requirements, necessary for above-mentioned `jupyter notebook` to work without errors.
 
 # Docker image
@@ -17,8 +24,9 @@ Repository holds code and data for video classification model - of cars represen
 ```
 docker build --no-cache \
 --build-arg MINIO_URL="<change_me>" \
---build-arg ROBOFLOW_API_KEY="<change_me>" \
--t f1-recognition-model:v0.6 -f Dockerfile .
+--build-arg MINIO_ACCESS_KEY="<change_me>" \
+--build-arg MINIO_SECRET_KEY="<change_me>" \
+-t f1-recognition-model:v0.7 -f Dockerfile .
 ```
 ## Running
 ```
@@ -26,12 +34,11 @@ docker run -it \
 -e MINIO_URL="<change_me>" \
 -e MINIO_ACCESS_KEY="<change_me>" \
 -e MINIO_SECRET_KEY="<change_me>" \
--e ROBOFLOW_API_KEY="<change_me>" \
-f1-recognition-model:v0.6
+f1-recognition-model:v0.7
 ```
 
 # Adding image to use in minikube
-`minikube image load f1-recognition-model:v0.6`
+`minikube image load f1-recognition-model:v0.7`
 
 # Example
 ## Image

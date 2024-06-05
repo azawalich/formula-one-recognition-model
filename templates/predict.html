@@ -18,14 +18,15 @@
       <div id="results">
         {% if is_image == 1 %}
         <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Image</b></h1>
-          <img src="{{ url_for('static', path=content_filepath) }}" />
+          <img width="{{width_half}}" height="{{height_half}}" src="{{url}}" />
+          <a href="{{url}}">Download your <b>annotated image</b> (valid for an hour)</a>
         {% endif %}
         {% if is_video == 1 %}
         <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Video</b></h1>
         <div class="video_js">
-          <video id="example_video_1" width="710" height="400" class="video-js  vjs-theme-city vjs-big-play-centered" controls
-             preload="auto" width="640" height="264" data-viblast-key="N8FjNTQ3NDdhZqZhNGI5NWU5ZTI=">
-             <source src="/get_video/{{video.name}}" type="video/mp4" />
+          <video id="example_video_1" width="{{width_half}}" height="{{height_half}}" class="video-js  vjs-theme-city vjs-big-play-centered" controls
+             preload="auto" width="{{width_half}}" height="{{height_half}}" data-viblast-key="N8FjNTQ3NDdhZqZhNGI5NWU5ZTI=">
+             <source src="{{url}}" type="video/mp4" />
           </video>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -33,19 +34,13 @@
         <script>
             videojs('#example_video_1', {}, function () { });
         </script>
-        <a href="/get_video/{{video.name}}">Download your <b>annotated video</b></a>
+        <a href="{{url}}">Download your <b>annotated video</b> (valid for an hour)</a>
         {% endif %}
         <br /><br />
-        <p>Disclaimer: Model is trained to recognize F1 cars <b>only from 2020 season</b>. It is <b>unable to generalize.</b><br /> It could <b>classify other images/videos incorrectly</b> (e.g. from other seasons or from different contexts at all).</p>
+        <p>Disclaimer: Model is trained to recognize F1 cars <b>only from 2020 season</b>. It is <b>unable to generalize.</b><br /> It is not ideal and could <b>classify other images/videos incorrectly</b> (e.g. from other seasons or from different contexts at all).</p>
         <br />
         <a href="/">Go back to the <b>homepage</b></a>
       </div>
-      {% if is_video == 1 %}
-      <div id="submission">
-        <h1><b>Formula 1</b> Model for Cars Recognition - <b>Annotated Video Frame</b></h1>
-        <img src="{{ url_for('static', path='temp_file_annotated.jpg') }}" width="960" height="540" />
-      </div>
-      {% endif %}
     </div>
   </body>
 </html>

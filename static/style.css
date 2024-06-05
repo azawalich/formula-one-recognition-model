@@ -101,6 +101,12 @@ b {
   float: left;
 }
 
+#submission img {
+  width: 50%;
+  max-width: 850px;
+  height: 50%; 
+}
+
 .lds-ring {
   /* change color here */
   color: #ff1801;
