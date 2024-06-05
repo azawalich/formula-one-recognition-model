@@ -60,34 +60,10 @@ f1-recognition-model:v0.7
 ### Annotated
 ![sample video annotated](./input/sample_video_1_annotated.mp4)
 
-# Model 
-## Statistics
-- Version: `11`,
-- Classes:
-  - confirmed:
-    - `Ferrari`,
-    - `Mclaren`,
-    - `Mercedes`,
-    - `Redbull`.
-  - not confimed:
-    - `Williams`,
-    - `Alpine`,
-    - `Haas`,
-    - `Alpha_Tauri`,
-    - `BWT`.
-  - missing:
-    - `Sauber`.
-- mAP: `95.5%`,
-- Precision: `92.0%`,
-- Recall: `93.9%`.
-
 ## Output
 bounding box with Team name and probability
 
-## Training Graphs
-![training graphs](https://storage.googleapis.com/roboflow-platform-cache/0rwi5tTqGphZ9WeAqy8Y1qh5G9S2/3gsXbN6o6fS93VJgZoc8/11/results.png)
-
 # Sources / Acknowledgements
 ## F1 Cars Video
-### classification model: [by Tarik Yilmaz Kanzileri, available here](https://universe.roboflow.com/tarik-yilmaz-kanzileri),
+### recognition model: [by Sérgio Ferreira Gomes, available here](https://github.com/Sgomes14843/Jetson-Nano-inference-with-Custom-Dataset),
 ### containerization and API creation: [by Aleksander Zawalich, available here](https://github.com/azawalich).
